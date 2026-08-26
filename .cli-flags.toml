@@ -1,0 +1,17 @@
+# flags-2-env surface for `opto-sync-web`
+[flags.config]
+env = "OPTO_SYNC_CONFIG"
+long = "config"
+help = "Path to TOML configuration"
+
+[flags.api_base]
+env = "OPTO_SYNC_API_BASE"
+long = "api-base"
+help = "API HTTP base URL"
+
+[flags.json]
+env = "OPTO_SYNC_JSON"
+long = "json"
+switch = true
+help = "Emit JSON"
+
