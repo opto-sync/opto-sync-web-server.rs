@@ -2,6 +2,7 @@
 
 pub mod auth;
 pub mod config;
+pub mod env;
 pub mod env_map;
 pub mod error;
 pub mod flags;

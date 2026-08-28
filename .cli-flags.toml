@@ -4,6 +4,9 @@ url = "https://github.com/opto-sync/opto-sync-web-server.rs"
 [parse]
 allow_unknown = false
 
+[env]
+load = false
+
 [flags.bind]
 env = "OPTO_SYNC_WEB_BIND"
 aliases = ["bind"]

@@ -12,15 +12,16 @@ pub struct WebConfig {
 impl WebConfig {
     pub fn from_env_map(env: &EnvMap) -> Self {
         Self {
-            bind: value(env, "OPTO_SYNC_WEB_BIND")
+            bind: value(env, crate::env::BIND)
                 .unwrap_or("127.0.0.1:8081")
                 .to_owned(),
-            api_http_base: value(env, "OPTO_SYNC_API_HTTP_BASE").map(str::to_owned),
-            database_url: value(env, "OPTO_SYNC_DATABASE_URL").map(str::to_owned),
+            api_http_base: value(env, crate::env::API_HTTP_BASE).map(str::to_owned),
+            database_url: value(env, crate::env::DATABASE_URL).map(str::to_owned),
         }
     }
 
     pub fn from_env() -> Self {
-        Self::from_env_map(&std::env::vars().collect())
+        let env = crate::env::load().unwrap_or_else(|err| panic!("{err}"));
+        Self::from_env_map(&env)
     }
 }
