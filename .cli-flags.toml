@@ -1,17 +1,27 @@
-# flags-2-env surface for `opto-sync-web`
-[flags.config]
-env = "OPTO_SYNC_CONFIG"
-long = "config"
-help = "Path to TOML configuration"
+[help]
+url = "https://github.com/opto-sync/opto-sync-web-server.rs"
 
-[flags.api_base]
-env = "OPTO_SYNC_API_BASE"
-long = "api-base"
-help = "API HTTP base URL"
+[parse]
+allow_unknown = false
 
-[flags.json]
-env = "OPTO_SYNC_JSON"
-long = "json"
-switch = true
-help = "Emit JSON"
+[env]
+load = false
 
+[flags.bind]
+env = "OPTO_SYNC_WEB_BIND"
+aliases = ["bind"]
+type = "string"
+default = "127.0.0.1:8081"
+help = "HTTP bind address."
+
+[flags.api-http-base]
+env = "OPTO_SYNC_API_HTTP_BASE"
+aliases = ["api-http-base"]
+type = "string"
+help = "API HTTP base URL."
+
+[flags.database-url]
+env = "OPTO_SYNC_DATABASE_URL"
+aliases = ["database-url"]
+type = "string"
+help = "Optional database URL for direct reads."
