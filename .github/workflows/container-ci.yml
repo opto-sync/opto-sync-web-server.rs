@@ -1,0 +1,58 @@
+name: Container CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Rust and container
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
+        with:
+          toolchain: 1.90.0
+          components: clippy
+
+      - name: Cache Cargo artifacts
+        uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+
+      - name: Lint with generated-code exceptions
+        run: >-
+          cargo clippy --all-targets --all-features --
+          -D warnings
+          -A clippy::match-like-matches-macro
+          -A clippy::module-inception
+
+      - name: Test
+        run: cargo test --all-targets --all-features
+
+      - name: Check runtime entrypoint
+        run: shellcheck scripts/sops-entrypoint.sh
+
+      - name: Build container
+        env:
+          DOCKER_BUILDKIT: "1"
+        run: docker build --tag opto-sync-web-server:pr .
+
+      - name: Inspect non-root runtime contract
+        run: |
+          test "$(docker image inspect --format '{{.Config.User}}' opto-sync-web-server:pr)" = "65532:65532"
+          test "$(docker image inspect --format '{{join .Config.Entrypoint " "}}' opto-sync-web-server:pr)" = "/usr/local/bin/sops-entrypoint.sh /usr/local/bin/opto-sync-web-server"
+          docker run --rm --entrypoint /usr/local/bin/sops-entrypoint.sh opto-sync-web-server:pr /bin/true
