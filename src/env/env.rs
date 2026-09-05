@@ -4,9 +4,10 @@ use super::generated;
 
 /// Code-level defaults. Overlay values from flags-2-env (`.env` vs process env vs argv) win.
 pub fn defaults() -> std::collections::BTreeMap<String, String> {
-    std::collections::BTreeMap::from([
-        ("OPTO_SYNC_WEB_BIND".to_string(), "127.0.0.1:8081".to_string()),
-    ])
+    std::collections::BTreeMap::from([(
+        "OPTO_SYNC_WEB_BIND".to_string(),
+        "127.0.0.1:8081".to_string(),
+    )])
 }
 
 /// Merge service defaults under the flags-2-env overlay.
@@ -20,5 +21,8 @@ pub fn load() -> Result<std::collections::BTreeMap<String, String>, generated::M
 }
 
 pub fn get<'a>(env: &'a std::collections::BTreeMap<String, String>, key: &str) -> Option<&'a str> {
-    env.get(key).map(String::as_str).map(str::trim).filter(|value| !value.is_empty())
+    env.get(key)
+        .map(String::as_str)
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
 }
