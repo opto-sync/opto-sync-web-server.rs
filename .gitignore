@@ -23,3 +23,7 @@
 !/env/enc/dev.env.enc
 !/env/enc/prod.env.enc
 # END ores-sops dotenv policy
+
+# Local temporary directories and Git worktrees (DEN-3956).
+tmp/
+temp/
