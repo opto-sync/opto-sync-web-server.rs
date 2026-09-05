@@ -33,15 +33,11 @@ jobs:
       - name: Cache Cargo artifacts
         uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
 
-      - name: Lint with generated-code exceptions
-        run: >-
-          cargo clippy --all-targets --all-features --
-          -D warnings
-          -A clippy::match-like-matches-macro
-          -A clippy::module-inception
+      - name: Lint
+        run: cargo clippy --locked --all-targets --all-features -- -D warnings
 
       - name: Test
-        run: cargo test --all-targets --all-features
+        run: cargo test --locked --all-targets --all-features
 
       - name: Check runtime entrypoint
         run: shellcheck scripts/sops-entrypoint.sh

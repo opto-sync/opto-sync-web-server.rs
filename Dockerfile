@@ -29,7 +29,7 @@ COPY . .
 RUN --mount=type=cache,target=/usr/local/cargo/registry,id=cargo-registry,sharing=locked \
     --mount=type=cache,target=/usr/local/cargo/git,id=cargo-git,sharing=locked \
     --mount=type=cache,target=/src/target,id=opto-sync-web-server-target-${TARGETARCH},sharing=locked \
-    cargo build --release --bin opto-sync-web-server \
+    cargo build --locked --release --bin opto-sync-web-server \
     && strip "target/release/opto-sync-web-server" \
     && cp "target/release/opto-sync-web-server" "/usr/local/bin/opto-sync-web-server"
 
