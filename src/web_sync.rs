@@ -42,14 +42,14 @@ impl AdmittedMutation<'_> {
     }
 
     #[must_use]
-    pub fn table(self) -> &str {
+    pub fn table(&self) -> &str {
         match self {
             Self::Upsert { table, .. } | Self::Delete { table, .. } => table,
         }
     }
 
     #[must_use]
-    pub fn record_id(self) -> &str {
+    pub fn record_id(&self) -> &str {
         match self {
             Self::Upsert { record_id, .. } | Self::Delete { record_id, .. } => record_id,
         }
@@ -471,7 +471,10 @@ mod tests {
         assert!(matches!(error, WebSyncError::MissingLocalProjection));
         let (_queue, _readback, telemetry) = service.into_parts();
         let events = telemetry.0.into_inner();
-        assert_eq!(events.last().map(|event| event.stage), Some(SyncTelemetryStage::LocalProjectionMissing));
+        assert_eq!(
+            events.last().map(|event| event.stage),
+            Some(SyncTelemetryStage::LocalProjectionMissing)
+        );
     }
 
     #[test]
