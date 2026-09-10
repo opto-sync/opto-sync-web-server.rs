@@ -1,0 +1,33 @@
+version = 1
+mode = "server"
+strict = true
+
+[flags2env]
+contract = ".cli-flags.toml"
+require_audit = true
+precedence = "argv-over-env"
+
+[sync]
+push_interval_ms = 3000
+pull_interval_ms = 3000
+max_batch_size = 256
+conflict_policy = "last-write-wins"
+
+[[env]]
+name = "bind_addr"
+key = "OPTO_SYNC_WEB_BIND"
+kind = "string"
+required = false
+secret = false
+default = "127.0.0.1:8081"
+
+[[env]]
+name = "api_base_url"
+key = "OPTO_SYNC_API_HTTP_BASE"
+kind = "url"
+required = false
+secret = false
+
+[server]
+enabled = true
+bind_addr_binding = "bind_addr"
