@@ -2,3 +2,6 @@ name = "opto-sync-web-server.rs"
 kind = "web-server"
 version = "0.1.0"
 
+[dependencies]
+"opto-sync/opto-sync-lib-core" = "^0.1.0"
+"opto-sync/opto-sync-orm-core" = "^0.1.0"

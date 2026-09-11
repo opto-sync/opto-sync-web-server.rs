@@ -13,3 +13,4 @@ pub mod persistence;
 pub mod server;
 pub mod state;
 pub mod transport;
+pub mod web_sync;
