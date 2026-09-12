@@ -32,3 +32,8 @@ tmp
 temp
 tmp/worktrees
 temp/worktrees
+Cargo.lock
+# DEN-3956: ignore agent scratch worktrees and temp dirs (fleet policy)
+.tmp/
+tmp/worktrees/
+**/tmp/worktrees/
