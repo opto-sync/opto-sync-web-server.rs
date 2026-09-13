@@ -1,7 +1,7 @@
 name: ORES runtime contracts
 on:
   pull_request:
-    paths: ['.zpkg.toml', '.zpkg.lock', '.cli-flags.toml', 'Cargo.toml', 'Cargo.lock', '.github/workflows/ores-runtime-contracts.yml']
+    paths: ['.zpkg.toml', '.zpkg.lock', '.cli-flags.toml', '.ores-*.toml', '.shared-auth.toml', '.auth-shared.toml', 'Cargo.toml', 'Cargo.lock', '.github/workflows/ores-runtime-contracts.yml']
   workflow_dispatch:
 permissions: { contents: read }
 concurrency:
@@ -31,5 +31,7 @@ jobs:
           "$RUNNER_TEMP/flags2env/build/flags2env" audit .cli-flags.toml
           "$RUNNER_TEMP/ores-cli/target/release/oresc" --no-json audit repo --path . --profile baseline
           "$RUNNER_TEMP/ores-cli/target/release/ores-cli" --no-json audit repo --path . --profile baseline
+          "$RUNNER_TEMP/ores-cli/target/release/oresc" --no-json audit repo --path . --profile source
+          ! (test -f .shared-auth.toml && test -f .auth-shared.toml)
           ! grep -R --line-number --fixed-strings 'github.com/ORESoftware/flags-2-env' Cargo.toml Cargo.lock .zpkg.toml 2>/dev/null
           git diff --exit-code HEAD
