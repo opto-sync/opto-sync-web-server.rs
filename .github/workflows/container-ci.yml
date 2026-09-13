@@ -42,6 +42,9 @@ jobs:
       - name: Check runtime entrypoint
         run: shellcheck scripts/sops-entrypoint.sh
 
+      - name: Verify SOPS entrypoint and argv contracts
+        run: node --test scripts/sops-entrypoint.test.mjs scripts/container-argv.test.mjs
+
       - name: Build container
         env:
           DOCKER_BUILDKIT: "1"
@@ -51,4 +54,10 @@ jobs:
         run: |
           test "$(docker image inspect --format '{{.Config.User}}' opto-sync-web-server:pr)" = "65532:65532"
           test "$(docker image inspect --format '{{join .Config.Entrypoint " "}}' opto-sync-web-server:pr)" = "/usr/local/bin/sops-entrypoint.sh /usr/local/bin/opto-sync-web-server"
+          test "$(docker image inspect --format '{{json .Config.Cmd}}' opto-sync-web-server:pr)" = "[]"
           docker run --rm --entrypoint /usr/local/bin/sops-entrypoint.sh opto-sync-web-server:pr /bin/true
+
+      - name: Verify built image argv contract
+        env:
+          CONTAINER_TEST_IMAGE: opto-sync-web-server:pr
+        run: node --test scripts/container-argv.test.mjs

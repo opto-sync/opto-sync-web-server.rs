@@ -206,8 +206,13 @@ EXPOSE 8081
 # .sops.yaml change, not an entrypoint change. Or decrypt in an initContainer
 # into an `emptyDir: { medium: Memory }` so the app never holds the key at all.
 #
-# With no ciphertext mounted the entrypoint runs the command unchanged, so this
-# image also works where config arrives as plain environment variables.
+# With no ciphertext mounted (and SOPS_REQUIRE_KEY unset/0) the entrypoint runs the
+# binary unchanged, so this image also works where config arrives as plain
+# environment variables. Set SOPS_REQUIRE_KEY=1 to fail closed instead.
+#
+# The binary is pinned in ENTRYPOINT after the wrapper and CMD is empty, so
+# `docker run IMAGE --flag` and Kubernetes `args:` append arguments to the
+# service instead of replacing it (scripts/container-argv.test.mjs).
 USER 10001:10001
-ENTRYPOINT ["/usr/local/bin/sops-entrypoint.sh"]
-CMD ["/usr/local/bin/opto-sync-web-server"]
+ENTRYPOINT ["/usr/local/bin/sops-entrypoint.sh", "/usr/local/bin/opto-sync-web-server"]
+CMD []
