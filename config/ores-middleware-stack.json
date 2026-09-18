@@ -2,11 +2,26 @@
   "contractVersion": "1.0.0",
   "environment": "production",
   "requiredCapabilities": [
-    "request-context", "panic-recovery", "request-id", "trace-context",
-    "structured-logging", "metrics-red", "deadline-timeout", "payload-limit",
-    "rate-limit", "auth", "json", "headers", "compression",
-    "tls-policy", "security-headers", "idempotency", "content-negotiation",
-    "fault-injection", "test-auth-bypass", "schema-capture"
+    "request-context",
+    "panic-recovery",
+    "request-id",
+    "trace-context",
+    "structured-logging",
+    "metrics-red",
+    "deadline-timeout",
+    "payload-limit",
+    "rate-limit",
+    "auth",
+    "json",
+    "headers",
+    "compression",
+    "tls-policy",
+    "security-headers",
+    "idempotency",
+    "content-negotiation",
+    "fault-injection",
+    "test-auth-bypass",
+    "schema-capture"
   ],
   "settings": {
     "requestIdHeader": "x-request-id",
@@ -17,26 +32,39 @@
     "contextRegistryTtlMs": 30000,
     "rateLimit": {
       "enabled": true,
-      "capacity": 120,
+      "capacity": 100,
       "refillPerSecond": 2.0,
-      "keyBy": ["ip", "route"],
-      "policyId": "web-default",
+      "keyBy": [
+        "ip",
+        "route"
+      ],
+      "policyId": "repo-default",
       "algorithm": "token-bucket",
       "layer": "application",
-      "failureMode": "fail-closed",
-      "windowMs": 60000,
+      "failureMode": "fail-open",
+      "windowMs": 0,
       "localCacheMaxEntries": 10000,
       "localCacheTtlMs": 60000,
-      "keyNamespace": "opto-sync-web-server:web-default",
+      "keyNamespace": "opto-sync-web-server:repo-default",
       "keyVersion": "v1",
       "keyDerivation": "external-hmac-sha256"
     },
-    "compression": {"enabled": true, "minimumBytes": 1024, "algorithms": ["br", "gzip"]},
+    "compression": {
+      "enabled": true,
+      "minimumBytes": 1024,
+      "algorithms": [
+        "br",
+        "gzip"
+      ]
+    },
     "tls": {
       "mode": "trusted-proxy",
       "requireHttps": true,
       "strictForwardedHeaders": true,
-      "trustedProxyCidrs": ["127.0.0.1/32", "::1/128"]
+      "trustedProxyCidrs": [
+        "127.0.0.1/32",
+        "::1/128"
+      ]
     },
     "securityHeaders": {
       "enabled": true,
@@ -50,13 +78,42 @@
       "ttlSeconds": 86400,
       "requiredMethods": []
     },
-    "faultInjection": {"enabled": false, "latencyMs": 0, "errorRate": 0.0, "dropRate": 0.0},
-    "testAuthBypass": {"enabled": false, "headerName": "x-ores-test-auth-bypass", "allowedCidrs": ["127.0.0.1/32", "::1/128"]},
-    "contentRepresentations": ["text/html", "application/json", "application/problem+json"]
+    "faultInjection": {
+      "enabled": false,
+      "latencyMs": 0,
+      "errorRate": 0.0,
+      "dropRate": 0.0
+    },
+    "testAuthBypass": {
+      "enabled": false,
+      "headerName": "x-ores-test-auth-bypass",
+      "allowedCidrs": [
+        "127.0.0.1/32",
+        "::1/128"
+      ]
+    },
+    "contentRepresentations": [
+      "text/html",
+      "application/json",
+      "application/problem+json"
+    ]
   },
   "integrations": {
-    "sharedAuth": {"mode": "disabled", "failOpen": false},
-    "optoSync": {"mode": "disabled", "failOpen": false},
-    "oresOtel": {"enabled": true, "serviceName": "opto-sync-web-server", "propagators": ["tracecontext", "baggage"]}
+    "sharedAuth": {
+      "mode": "disabled",
+      "failOpen": false
+    },
+    "optoSync": {
+      "mode": "disabled",
+      "failOpen": false
+    },
+    "oresOtel": {
+      "enabled": true,
+      "serviceName": "opto-sync-web-server",
+      "propagators": [
+        "tracecontext",
+        "baggage"
+      ]
+    }
   }
 }
