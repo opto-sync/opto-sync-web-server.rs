@@ -1,0 +1,20 @@
+name: bounded formal sync model
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  model-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Prove monotonic replication cursors
+        run: |
+          node <<'NODE'
+          const assert=require('node:assert/strict'),bound=7;
+          const initial={local:0,remote:0,ack:0,stale_attempts:0,stale_accepts:0};
+          const steps=[['local-write',s=>({...s,local:s.local+1})],['push',s=>({...s,remote:Math.max(s.remote,s.local),ack:Math.max(s.ack,s.local)})],['pull',s=>({...s,local:Math.max(s.local,s.remote)})],['stale-ack',s=>({...s,stale_attempts:s.stale_attempts+1})]];
+          const inv=s=>s.ack<=s.remote&&s.ack<=s.local&&s.stale_accepts===0;
+          let f=[initial],seen=new Map([[JSON.stringify(initial),initial]]);for(let d=0;d<=bound;d++){const n=[];for(const s of f){assert(inv(s));for(const [name,step] of steps){const t=step(structuredClone(s));assert(inv(t),`${name} violated sync invariant`);const k=JSON.stringify(t);if(!seen.has(k)){seen.set(k,t);n.push(t)}}}f=n}assert(seen.size>=3);console.log(`sync formal model OK states=${seen.size} bound=${bound}`);
+          NODE
