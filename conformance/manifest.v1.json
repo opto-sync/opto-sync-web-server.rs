@@ -1,0 +1,33 @@
+{
+  "schema": "opto-sync.conformance-manifest/v1",
+  "repository": "opto-sync/opto-sync-web-server.rs",
+  "claims": [
+    {
+      "id": "web_sync.single_queue_seam",
+      "implementation": "src/web_sync.rs",
+      "evidence": ["web_sync::tests::upsert_uses_one_queue_and_truthful_local_projection_boundary"]
+    },
+    {
+      "id": "web_sync.delete_has_no_fabricated_payload",
+      "implementation": "src/web_sync.rs",
+      "evidence": ["web_sync::tests::delete_never_invents_a_payload"]
+    },
+    {
+      "id": "web_sync.missing_projection_fails_closed",
+      "implementation": "src/web_sync.rs",
+      "evidence": ["web_sync::tests::missing_projection_is_not_reported_as_authoritative_success"]
+    }
+  ],
+  "future_checkpoint_view_gates": [
+    "read_does_not_mutate_state",
+    "checkpoint_ordering_matches_authored_contract",
+    "stale_response_cannot_regress_newer_view",
+    "tenant_and_filter_scope_explicit",
+    "no_wall_clock_or_transport_liveness_freshness_inference"
+  ],
+  "non_claims": [
+    "authoritative_checkpoint_view_implemented",
+    "causal_consistency",
+    "total_order"
+  ]
+}
